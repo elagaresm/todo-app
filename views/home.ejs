@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>To Do app</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+         <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js" integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.3/flowbite.min.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <h1 class="font-medium leading-tight text-5xl mt-0 mb-2 text-black-600">To Do App ✨</h1>
+        <div>
+            <div class="ml-6 mt-6 block p-6 rounded-lg shadow-lg bg-white max-w-sm">
+                <form action="/home" method="post">
+                    <div class="form-group mb-6">
+                        <label for="task" class="form-label inline-block mb-2 text-gray-700">Task</label>
+                        <input id="task" type="text" name="text" class="form-control
+                        block
+                        w-full
+                        px-3
+                        py-1.5
+                        text-base
+                        font-normal
+                        text-gray-700
+                        bg-white bg-clip-padding
+                        border border-solid border-gray-300
+                        rounded
+                        transition
+                        ease-in-out
+                        m-0
+                        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder="Enter task">
+                    </div>
+                    <button type="submit" id="submitBtn" class="
+                        px-6
+                        py-2.5
+                        bg-blue-600
+                        text-white
+                        font-medium
+                        text-xs
+                        leading-tight
+                        uppercase
+                        rounded
+                        shadow-md
+                        hover:bg-blue-700 hover:shadow-lg
+                        focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
+                        active:bg-blue-800 active:shadow-lg
+                        transition
+                        duration-150
+                        ease-in-out disabled:opacity-50" disabled>Submit</button>
+                </form>
+            </div>
+
+            <ul>
+                <% for (let task of tasks ) { %>
+                <div class="mt-6">
+                    <form action="/home?_method=DELETE" method="post" class="inline-flex items-center">
+                        <li data-id="<%= task.id %>" class="list-disc list-inside mx-6"><%= task.text %></li>
+                        <button id="delete" value="<%=task.id %>"  name="id" class="bg-red-300 hover:bg-red-400 text-red-800 font-bold py-2 px-4 rounded-l">
+                            Delete
+                        </button>
+                    </form>
+                    <button type="button" class="update-group bg-blue-300 hover:bg-blue-400 text-blue-800 font-bold py-2 px-4 rounded-r">
+                        Update
+                    </button>
+
+                    <form method="post" action="/home?_method=PATCH" hidden>
+                        <label><input type="text" name="updatedTask"></label>
+                        <button type="submit" name="id" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" value="<%= task.id %>">Save Changes</button>
+                    </form>
+
+
+                </div>
+                <% } %>
+            </ul>
+
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.3/flowbite.min.js"></script>
+        <script>
+           $("#task").keyup(function() {
+               const regex = new RegExp('[a-zA-Z]+')
+               const str = $("#task").val()
+               if (str.length == 00 && !str.match(regex)) {
+                   $('#submitBtn').addClass('disabled:opacity-50').prop('disabled', true)
+               }
+               if (str.length != 0 && str.match(regex)) {
+                   $('#submitBtn').removeClass('disabled:opacity-50').prop('disabled', false)
+               }
+           })
+           
+           $(".update-group").toArray().forEach(ele => ele.addEventListener('click', function() {
+               const textValue = this.parentNode.childNodes[1][0].previousElementSibling.textContent
+               console.log(textValue)
+               const input = this.nextElementSibling[0]
+               input.value = textValue
+               this.nextElementSibling.hidden = false
+           }))
+        </script>
+    </body>
+</html>
